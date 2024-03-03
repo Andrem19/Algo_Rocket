@@ -3,3 +3,4 @@ class Signal:
         self.signal = 3
         self.data = 1
         self.index = 0
+        self.type_os_signal = ''
