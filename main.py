@@ -9,6 +9,7 @@ import variant.single_saldo as ss
 import variant.multi_saldo as ms
 from datetime import timedelta
 from models.settings import Settings
+import cold_count as cc
 import asyncio
 import high_koff as hk
 import io
@@ -29,7 +30,18 @@ async def main(args):
     if sv.settings.main_variant == 1:
         await ss.mp_saldo(coin_list, True)
     elif sv.settings.main_variant == 2:
-        await ms.mp_saldo(coin_list)
+        if sv.settings.hot_count_on_off==1:
+            await ms.mp_saldo(coin_list)
+        if sv.settings.cold_count_on_off==1:
+            if sv.settings.hot_count_on_off==0:
+                sv.unique_ident = ''
+            await cc.count_run()
+    
+    sv.time_finish = datetime.now().timestamp()
+    seconds = sv.time_finish-sv.time_start
+    tm = str(timedelta(seconds=seconds))
+    print(f'uid: {sv.unique_ident}')
+    print(f'Exec speed: {tm}')
 
 
 if __name__ == "__main__":
