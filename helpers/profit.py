@@ -63,7 +63,7 @@ def process_profit(dt: dict, is_first_iter: bool):
         'saldo': saldo,
         'type_close': dt['type_close'],
         'data_s': sv.signal.data,
-        'type_of_signal': sv.type_os_signal
+        'type_of_signal': sv.signal.type_os_signal
     }
     dt['profit_list'].append(position)
     

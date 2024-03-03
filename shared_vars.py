@@ -14,6 +14,9 @@ unique_ident = None
 time_start = 0
 time_finish = 0
 
+preload_sets = {}
+preload = False
+
 data: np.ndarray = None
 data_1: np.ndarray = None
 data_2: np.ndarray = None
@@ -34,3 +37,18 @@ candel_dict_5 = {}
 candle_dict_15 = {}
 candel_dict_1 = {}
 candel_dict_2 = {}
+
+max_val = {
+        'ham_1a': 0,
+        'ham_5a': 0,
+        'ham_15': 0,
+        'down_1': 0,
+        'rsi_1': 0,
+        'rsi_5': 0,
+        'rsi_15': 0,
+        'adx_5': 0,
+        'dir_5': 0,
+    }
+
+frozen = 0
+adx_counter = 0

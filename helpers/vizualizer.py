@@ -158,16 +158,17 @@ def plot_time_series(data_list: list, save_pic: bool, points: int, dont_show: bo
     table.scale(0.8, 0.8)
     table.auto_set_column_width([0, 1, 2])
 
-    cell_text2 = []
-    for key, value in data_items_2.items():
-        cell_text2.append([key, '', value])
-    table2 = plt.table(cellText=cell_text2,
-                  loc='lower right',
-                  edges='open')
-    table2.auto_set_font_size(False)
-    table2.set_fontsize(8)
-    table2.scale(0.8, 0.8)
-    table2.auto_set_column_width([0, 1, 2])
+    if len(data_items_2)>0:
+        cell_text2 = []
+        for key, value in data_items_2.items():
+            cell_text2.append([key, '', value])
+        table2 = plt.table(cellText=cell_text2,
+                    loc='lower right',
+                    edges='open')
+        table2.auto_set_font_size(False)
+        table2.set_fontsize(8)
+        table2.scale(0.8, 0.8)
+        table2.auto_set_column_width([0, 1, 2])
 
     # Построение графика
     ax.plot(dates, values, linewidth=0.8)

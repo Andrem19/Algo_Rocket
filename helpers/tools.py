@@ -1,6 +1,8 @@
-import util
+import helpers.util as util
 import numpy as np
 import high_koff as hk
+import talib
+import shared_vars as sv
 from models.increaser import Increaser
 from models.increaser import GeneralIncreaser
 
@@ -108,3 +110,44 @@ def get_tail_body(open, high, low, close):
     max_br = max([open, close])
     high_tail = high - max_br
     return low_tail, high_tail, body
+
+def open_close(open, close, var):
+    if var == 'bear':
+        return open > close
+    elif var == 'bull':
+        return open < close
+    return False
+
+def tail_body(tail, body, lower_bigger, koff):
+    if lower_bigger == 'lower':
+        return tail < body *koff
+    elif lower_bigger == 'bigger':
+        return tail > body *koff
+    return False
+
+def pass_step(sg: int, vol_cand, br_val, opens, highs, lows, closes, time_frame, time_period):
+    if sg != 3 :
+        return sg
+    min_br = min([opens[-1], closes[-1]])
+    body = abs(opens[-1] - closes[-1])
+    low_tail = min_br - lows[-1]
+
+    if check_high_candel(highs[-1], lows[-1], vol_cand, sv.settings.coin):
+        br = br_val
+        if low_tail > body*0.4:
+            br = 26
+        sg, rsi_2 = rsi_inc_bord(closes,sv.gen_increaser.increase_border, br, time_period)
+        if low_tail > body*0.2 and sg == 3 and rsi_2 < 22:
+            sg = 1
+    
+    res_sg = position_entry_manager(sv.gen_increaser, time_frame, sg)
+    return res_sg
+
+def rsi_inc_bord(closes, incresce, rsi_min_border, timeperiod):
+    rsi = talib.RSI(closes, timeperiod=timeperiod)
+    if incresce> 0:
+        rsi_min_border-=incresce*2
+    if rsi[-1] < rsi_min_border:
+        return 1, rsi[-2]
+    else:
+        return 3, rsi[-2]
