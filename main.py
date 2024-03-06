@@ -34,8 +34,11 @@ async def main(args):
             await ms.mp_saldo(coin_list)
         if sv.settings.cold_count_on_off==1:
             if sv.settings.hot_count_on_off==0:
-                sv.unique_ident = ''
+                sv.unique_ident = sv.settings.curren_uid
             await cc.count_run()
+    elif sv.settings.main_variant == 3:
+        #Search patterns
+        pass
     
     sv.time_finish = datetime.now().timestamp()
     seconds = sv.time_finish-sv.time_start

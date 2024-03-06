@@ -23,6 +23,7 @@ data_2: np.ndarray = None
 data_5: np.ndarray = None
 data_15: np.ndarray = None
 data_30: np.ndarray = None
+data_60: np.ndarray = None
 
 settings: Settings = set.setup()
 
@@ -35,6 +36,7 @@ sum_saldo = []
 gen_increaser = GeneralIncreaser()
 candel_dict_5 = {}
 candle_dict_15 = {}
+candle_dict_60 = {}
 candel_dict_1 = {}
 candel_dict_2 = {}
 
@@ -52,3 +54,6 @@ max_val = {
 
 frozen = 0
 adx_counter = 0
+
+global_trend = 'none'
+close_60 = []

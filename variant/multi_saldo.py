@@ -58,6 +58,10 @@ def do_job(coin: str, profit_path: str, lock):
         data_gen_1m = gd.load_data_in_chunks(sv.settings, 100000, 1)
         sv.data_5 = gd.load_data_sets(5)
         sv.candel_dict_5 = util.create_candle_dict(sv.data_5)
+        #==============1h================================
+        sv.data_60 = gd.load_data_sets(60)
+        sv.candle_dict_60 = util.create_candle_dict(sv.data_60)
+        #================================================
         
         position_collector = []
         last_position = {}

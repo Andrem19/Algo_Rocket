@@ -26,6 +26,7 @@ class Settings:
         self.taker_fee: float = 0.12
         self.maker_fee: float = 0.12
 
+        self.curren_uid = ''
         self.hot_count_on_off: int = 1
         self.cold_count_on_off: int = 0
         self.cold_count_iterations: int = 1000

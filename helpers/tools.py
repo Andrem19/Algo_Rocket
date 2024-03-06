@@ -17,6 +17,26 @@ def trend(closes: np.ndarray, variant: str, step: int, minus_last: int):
         trend = all(np.diff(row_1) < 0) or all(np.diff(row_2) < 0) or all(np.diff(row_3) < 0)
     return trend
 
+def what_trend(closes: np.ndarray, step: int, minus_last: int):
+    if len(closes) < 60:
+        return 'none'
+    row_1 = util.chose_arr(0, closes[:-minus_last], step)
+    row_2 = util.chose_arr(3, closes[:-minus_last], step)
+    row_3 = util.chose_arr(6, closes[:-minus_last], step)
+    trend = False
+
+    trend_up = all(np.diff(row_1) > 0) or all(np.diff(row_2) > 0) or all(np.diff(row_3) > 0)
+
+    trend_down = all(np.diff(row_1) < 0) or all(np.diff(row_2) < 0) or all(np.diff(row_3) < 0)
+
+    if trend_up:
+        return 'up'
+    elif trend_down:
+        return 'down'
+    else:
+        return 'none'
+
+
 def check_rise(highs: np.ndarray, lows: np.ndarray, numval: int, multiplier: float, less_bigger: str):
     num = numval+1
     high = highs[-num:]
