@@ -185,7 +185,7 @@ def filter_positions(deals):
     filtered_deals = []
 
     filter_val = {
-        'ham_1a': 5,#5->7
+        'ham_1a': 6,#5->7
         'ham_1b': 1,#2->1!
         'rsi_1': 5,#5
         'down_1': 5,#5
@@ -196,10 +196,12 @@ def filter_positions(deals):
         'rsi_5': 5,#5
         'coint_15': 5,#5
         'adx_5': 5,#3->5
+        'adx_5aa': 5,#3->5
         'ham_15': 1,#3->1
         'mid_5': 5,#5
         'mid_15': 5,#5
         'test_5': 5,
+        'test_10': 5,
     }
     on_off = {
         'ham_1a': 1,
@@ -213,10 +215,12 @@ def filter_positions(deals):
         'rsi_5': 1,
         'coint_15': 1,
         'adx_5': 1,
+        'adx_5aa': 1,
         'ham_15': 1,
         'mid_5': 1,
         'mid_15': 1,
         'test_5': 1,
+        'test_10': 1,
     }
 
     for i in range(len(deals)):
@@ -255,7 +259,7 @@ def recount_saldo(filtered_deals):
     return filtered_deals
 
 def set_koof(position, lenth_active):
-    if position["type_of_signal"] in ['ham_1a', 'ham_5a', 'adx_5']:
+    if position["type_of_signal"] in ['ham_1a', 'ham_5a']:
         position["profit"]*=2
     else:
         position["profit"]*=1

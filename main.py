@@ -3,6 +3,7 @@ import coins as coins
 from datetime import datetime
 import setup as setup
 import helpers.util as util
+import variant.pattern_sarcher as ps
 from itertools import product
 import random
 import variant.single_saldo as ss
@@ -38,7 +39,7 @@ async def main(args):
             await cc.count_run()
     elif sv.settings.main_variant == 3:
         #Search patterns
-        pass
+        await ps.search_pattern(coin_list)
     
     sv.time_finish = datetime.now().timestamp()
     seconds = sv.time_finish-sv.time_start

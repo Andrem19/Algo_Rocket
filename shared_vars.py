@@ -57,3 +57,106 @@ adx_counter = 0
 
 global_trend = 'none'
 close_60 = []
+
+list_of_patterns = []
+
+ath = {}
+
+token_model_up = {
+    'high<>body*0.6': {
+        'less': 0,
+        'bigger': 0,
+    },
+    'low<>body*0.6': {
+        'less': 0,
+        'bigger': 0,
+    },
+    'cndl_not_less': {
+        '1': 0,
+        '2': 0,
+        '3': 0,
+        '4': 0,
+        '5': 0,
+        '6': 0,
+    },
+    'glob1htrend15': {
+        'up': 0,
+        'down': 0,
+        'none': 0
+    },
+    'close>prevLow': {
+        True: 0,
+        False: 0,
+    },
+    'close<prevHigh': {
+        True: 0,
+        False: 0,
+    },
+    'last1m': {
+        'long': 0,
+        'short': 0,
+    },
+    'rsi': {
+        '>70': 0,
+        '<30': 0,
+        '<70>30': 0,
+    },
+    'rise2mult3': {
+        'less': 0,
+        'bigger': 0,
+    },
+    'all_True_any_False_3': {
+        'allDown': 0,
+        'allUp': 0,
+        'none': 0
+    },
+}
+token_model_down = {
+    'high<>body*0.6': {
+        'less': 0,
+        'bigger': 0,
+    },
+    'low<>body*0.6': {
+        'less': 0,
+        'bigger': 0,
+    },
+    'cndl_not_less': {
+        '1': 0,
+        '2': 0,
+        '3': 0,
+        '4': 0,
+        '5': 0,
+        '6': 0,
+    },
+    'glob1htrend15': {
+        'up': 0,
+        'down': 0,
+        'none': 0
+    },
+    'close>prevLow': {
+        True: 0,
+        False: 0,
+    },
+    'close<prevHigh': {
+        True: 0,
+        False: 0,
+    },
+    'last1m': {
+        'long': 0,
+        'short': 0,
+    },
+    'rsi': {
+        '>70': 0,
+        '<30': 0,
+        '<70>30': 0,
+    },
+    'rise2mult3': {
+        'less': 0,
+        'bigger': 0,
+    },
+    'all_True_any_False_3': {
+        'allDown': 0,
+        'allUp': 0,
+        'none': 0
+    },
+}

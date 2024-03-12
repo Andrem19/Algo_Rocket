@@ -18,15 +18,15 @@ def run(data, last_position, is_first_iter: bool):
         if last_position:
             profit_list.append(last_position)
 
-        i_1 = sv.settings.chunk_len*2*5+1 if is_first_iter else sv.settings.chunk_len*3+1
+        i_1 = sv.settings.chunk_len*2*5+1 if is_first_iter else sv.settings.chunk_len*7
 
         while i_1 < data_len_for_loop:
             i_5 = util.get_candel_index(data[i_1][0], sv.candel_dict_5)
             i_15_1 = util.get_candel_index(data[i_1][0], sv.candel_dict_1)
             i_15_2 = util.get_candel_index(data[i_1][0], sv.candel_dict_2)
-            i_15_3 = util.get_candel_index(data[i_1][0], sv.candle_dict_60)
+            # i_15_3 = util.get_candel_index(data[i_1][0], sv.candle_dict_60)
 
-            sg.get_signal(i_1, i_5, i_15_1, i_15_2, i_15_3, data, sv.settings)
+            sg.get_signal(i_1, i_5, i_15_1, i_15_2, data, sv.settings)
 
             if sv.signal.signal in sv.settings.s:
                 # if sv.signal.signal == 1 and sv.global_trend in ['none', 'down']:

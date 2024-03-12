@@ -1,7 +1,10 @@
-data_items_2 = {
-    'd':0,
-    'g':0,
-}
+import math
 
-if len(data_items_2)>0:
-    print(1)
+def find_sqrt(target: int, number: int, prec: float):
+    res = number*prec
+    if res*res <= target:
+        return res
+    return find_sqrt(target, res, prec)
+
+res = find_sqrt(1000, 1000, 0.98)
+print(res)

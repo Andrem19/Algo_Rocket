@@ -9,6 +9,7 @@ import time
 import copy
 import numpy as np
 import traceback
+import coins
 import multiprocessing
 from datetime import datetime
 import worker.multi_worker as w
@@ -34,6 +35,8 @@ async def process_result(result, coin, coin_list_len):
 
 def do_job(coin: str, profit_path: str, lock):
     try:
+
+        sv.ath[coin] = 0
         file_coin = f'_crypto_data/{coin}/{coin}_1m.csv'
         if not os.path.exists(file_coin):
             print(f'{coin} doesnt exist')
@@ -59,8 +62,8 @@ def do_job(coin: str, profit_path: str, lock):
         sv.data_5 = gd.load_data_sets(5)
         sv.candel_dict_5 = util.create_candle_dict(sv.data_5)
         #==============1h================================
-        sv.data_60 = gd.load_data_sets(60)
-        sv.candle_dict_60 = util.create_candle_dict(sv.data_60)
+        # sv.data_60 = gd.load_data_sets(60)
+        # sv.candle_dict_60 = util.create_candle_dict(sv.data_60)
         #================================================
         
         position_collector = []

@@ -5,6 +5,7 @@ import talib
 import shared_vars as sv
 from models.increaser import Increaser
 from models.increaser import GeneralIncreaser
+from numba import jit
 
 def trend(closes: np.ndarray, variant: str, step: int, minus_last: int):
     row_1 = util.chose_arr(0, closes[:-minus_last], step)
@@ -59,6 +60,7 @@ def check_rise(highs: np.ndarray, lows: np.ndarray, numval: int, multiplier: flo
             res = False
     return res
 
+@jit(nopython=True)
 def all_True_any_False(closes: np.ndarray, opens: np.ndarray, numval: int, variant: str, types: bool) -> bool:
     num = numval+1
     closes = closes[-num:-1]
@@ -76,10 +78,11 @@ def all_True_any_False(closes: np.ndarray, opens: np.ndarray, numval: int, varia
             return np.all(comparisons)
         else:
             return np.all(~comparisons)
-        
-def convert_timeframe(opens: np.ndarray, highs: np.ndarray, lows: np.ndarray, closes: np.ndarray, timeframe: int):
+
+@jit(nopython=True)
+def convert_timeframe(opens: np.ndarray, highs: np.ndarray, lows: np.ndarray, closes: np.ndarray, timeframe: int, ln: int):
     lenth_opens = len(opens)
-    length = 3#lenth_opens // timeframe
+    length = lenth_opens // timeframe if ln == 0 else ln
 
     new_opens = np.zeros(length)
     new_highs = np.zeros(length)
@@ -171,3 +174,24 @@ def rsi_inc_bord(closes, incresce, rsi_min_border, timeperiod):
         return 1, rsi[-2]
     else:
         return 3, rsi[-2]
+    
+def down_line(lows, period, treshold):
+    per = lows[-period:-1]
+    last_point = lows[-1]
+    low_border = last_point * (1-treshold*2)
+    high_border = last_point * (1+treshold)
+    if any(p for p in per if p > low_border and p <high_border and min(per)==p):
+        return True
+    else:
+        return False
+    
+def up_line(highs, period, treshold):
+    per = highs[-period:-1]
+    last_point = highs[-1]
+    low_border = last_point# * (1-treshold*2)
+    high_border = last_point * (1+treshold*2)
+    if any(p for p in per if p > low_border and p <high_border and max(per)==p):
+        return True
+    else:
+        return False
+        

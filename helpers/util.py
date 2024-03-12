@@ -4,6 +4,7 @@ from models.increaser import GeneralIncreaser
 import shared_vars as sv
 import helpers.get_data as gd
 import traceback
+import coins as coins
 import random
 import time
 import os
