@@ -43,10 +43,20 @@ async def main(args):
         #Search patterns
         await ps.search_pattern(coin_list)
     elif sv.settings.main_variant == 4:
-        for _ in range(1000):
+        if len(args) >= 3:
+            min_rsi_1 = int(args[0])
+            min_rsi_2 = int(args[1])
+            signal = int(args[2])
+        else:
+            min_rsi_1 = 30
+            min_rsi_2 = 60
+            signal = 1
+        await tel.send_inform_message(f'{min_rsi_1}-{min_rsi_2}-{signal} work starting...', '', False)
+        num=0
+        while True:
             sv.unique_ident = str(uuid.uuid4())[:8]
 
-            min_br = random.randint(30, 60)
+            min_br = random.randint(min_rsi_1, min_rsi_2)
             max_br = min_br + random.randint(10, 40)
             method_1 = MethodFunc(tools.check_rsi, ['closes', 27, min_br, max_br])
             
@@ -72,11 +82,16 @@ async def main(args):
             selected_methods = [method_1, method_2]
             additional_methods = random.sample(methods[2:], random.randint(2, 4))
             selected_methods.extend(additional_methods)
-            reactor = Reactor(selected_methods, 1)
+            reactor = Reactor(selected_methods, signal)
             reactor.print_pattern()
             sv.reactor = reactor
-
-            await ss.mp_saldo(coin_list, False)
+            try:
+                await ss.mp_saldo(coin_list, False)
+                num+=1
+                if num%25==0:
+                    await tel.send_inform_message(f'{min_rsi_1}-{min_rsi_2}-{signal} is alive', '', False)
+            except Exception as e:
+                print(e)
 
     
     sv.time_finish = datetime.now().timestamp()

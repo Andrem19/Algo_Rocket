@@ -5,6 +5,7 @@ from models.increaser import Increaser, GeneralIncreaser
 from models.settings import Settings
 from datetime import datetime, timedelta
 from models.reactor import Reactor
+from commander.com import Commander
 
 days_gap = {}
 telegram_api = 'API_TOKEN_1'
@@ -163,3 +164,6 @@ token_model_down = {
     },
 }
 saldo_sum = 0
+
+commander: Commander = None
+last_command = ''

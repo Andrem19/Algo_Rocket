@@ -22,7 +22,7 @@ def setup():
     settings.s = [1] if settings.only == 1 else [2] if settings.only == 2 else (1,2)
     settings.counter = 0
 
-    settings.start_date = datetime(2017, 1, 1)
+    settings.start_date = datetime(2022, 1, 1)
     settings.finish_date = datetime(2024, 4, 1)
 
     settings.taker_fee = 0.12
