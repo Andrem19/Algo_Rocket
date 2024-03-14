@@ -8,11 +8,7 @@ import os
 import shared_vars as sv
 from PIL import Image
 import helpers.statistic_count as stat
-from PIL import Image
-from math import ceil
-from PIL import Image
 import numpy as np
-from keras.preprocessing import image
 from matplotlib.ticker import MultipleLocator
 from matplotlib.dates import MonthLocator
 
