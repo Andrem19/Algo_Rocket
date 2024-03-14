@@ -190,12 +190,13 @@ def filter_positions(deals):
         'rsi_1': 5,#5
         'down_1': 5,#5
         'ham_5a': 5,#5->7
-        'ham_5aa': 1,#5->1
+        'ham_5aa': 5,#5->1
         'ham_5b': 3,#2->3!
         'ham_5bb': 2,#2
         'rsi_5': 5,#5
         'coint_15': 5,#5
         'adx_5': 5,#3->5
+        'adx_5a': 5,#3->5
         'adx_5aa': 5,#3->5
         'ham_15': 1,#3->1
         'mid_5': 5,#5
@@ -209,12 +210,13 @@ def filter_positions(deals):
         'rsi_1': 1,
         'down_1': 1,
         'ham_5a': 1,
-        'ham_5aa': 0,
+        'ham_5aa': 1,
         'ham_5b': 1,
         'ham_5bb': 1,
         'rsi_5': 1,
         'coint_15': 1,
         'adx_5': 1,
+        'adx_5a': 1,
         'adx_5aa': 1,
         'ham_15': 1,
         'mid_5': 1,

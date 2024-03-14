@@ -193,7 +193,7 @@ def plot_time_series(data_list: list, save_pic: bool, points: int, dont_show: bo
     if save_pic:
         if not os.path.exists(path):
             os.makedirs(path)
-        end_path = f'{path}/{datetime.now().timestamp()}.png'
+        end_path = f'{path}/{datetime.now().timestamp()}{sv.unique_ident}.png'
         plt.savefig(end_path)
         plt.close(fig)
         return end_path

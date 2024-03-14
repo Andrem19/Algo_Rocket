@@ -7,6 +7,42 @@ from models.increaser import Increaser
 from models.increaser import GeneralIncreaser
 from numba import jit
 
+
+def last_close_higher(highs, lows, closes, lower_higher, high_low_tail):
+    if lower_higher == 'none':
+        return True
+    elif lower_higher == 'lower':
+        if high_low_tail == 'high':
+            return closes[-1]<highs[-2]
+        else:
+            return closes[-1]<lows[-2]
+    elif lower_higher == 'higher':
+        if high_low_tail == 'high':
+            return closes[-1]>highs[-2]
+        else:
+            return closes[-1]>lows[-2]
+    return False
+
+
+def check_rsi(closes, timestep, min_level, max_level):
+    
+    rsi = talib.RSI(closes, timestep)
+    current_rsi = rsi[-1]
+    
+    within_min = current_rsi > min_level if min_level > 0 else True
+    within_max = current_rsi < max_level if max_level > 0 else True
+
+    return within_min and within_max
+    
+def open_close(open1, close1, lower_bigger):
+    if lower_bigger == 'none':
+        return True
+    if lower_bigger == 'lower':
+        return close1<open1
+    else:
+        return close1>open1
+
+
 def trend(closes: np.ndarray, variant: str, step: int, minus_last: int):
     row_1 = util.chose_arr(0, closes[:-minus_last], step)
     row_2 = util.chose_arr(3, closes[:-minus_last], step)
@@ -120,11 +156,26 @@ def position_entry_manager(increaser_gen: GeneralIncreaser, data: int, signal: i
     
     return 3
 
-def check_high_candel(high: float, low: float, border, coin: str):
+def check_high_candel(high: float, low: float, border, coin: str = 'XRPUSDT'):
     vol_can = util.calculate_percent_difference(high, low)
     if abs(vol_can) > border*hk.best_set_1[coin]:
         return True
     return False
+
+def low_high_tails(open, high, low, close, low_high, lower_bigger, koff):
+    if low_high == 'none':
+        return True
+    low_tail, high_tail, body = get_tail_body(open, high, low, close)
+    if low_high == 'low':
+        if lower_bigger == 'lower':
+            return low_tail<body*koff
+        elif lower_bigger == 'bigger':
+            return low_tail>body*koff
+    elif low_high == 'high':
+        if lower_bigger == 'lower':
+            return high_tail<body*koff
+        elif lower_bigger == 'bigger':
+            return high_tail>body*koff
 
 def get_tail_body(open, high, low, close):
     body = abs(open - close)
@@ -133,13 +184,6 @@ def get_tail_body(open, high, low, close):
     max_br = max([open, close])
     high_tail = high - max_br
     return low_tail, high_tail, body
-
-def open_close(open, close, var):
-    if var == 'bear':
-        return open > close
-    elif var == 'bull':
-        return open < close
-    return False
 
 def tail_body(tail, body, lower_bigger, koff):
     if lower_bigger == 'lower':
@@ -188,10 +232,59 @@ def down_line(lows, period, treshold):
 def up_line(highs, period, treshold):
     per = highs[-period:-1]
     last_point = highs[-1]
-    low_border = last_point# * (1-treshold*2)
-    high_border = last_point * (1+treshold*2)
-    if any(p for p in per if p > low_border and p <high_border and max(per)==p):
+    low_border = last_point * (1-treshold)
+    high_border = last_point * (1+treshold)
+    if any(p for p in per if p > low_border and p <high_border):
+        return True
+    else:
+        return False
+    
+def up_line_plus(highs, period, treshold):
+    per = highs[-period:]
+    last_point = highs[-1]
+    low_border = last_point * (1-treshold)
+    high_border = last_point * (1+treshold)
+    if all(p for p in per if p > low_border and p <high_border):
         return True
     else:
         return False
         
+def gap_detection(prev_close: float, last_open: float, up_down: str, perc: float):
+    if up_down == 'up':
+        if last_open > prev_close:
+            diff = abs(util.calculate_percent_difference(last_open, prev_close))
+            if diff > perc:
+                return True
+    elif up_down == 'down':
+        if last_open < prev_close:
+            diff = abs(util.calculate_percent_difference(last_open, prev_close))
+            if diff > perc:
+                return True
+    elif up_down == 'or':
+        diff = abs(util.calculate_percent_difference(last_open, prev_close))
+        if diff > perc:
+            return True
+    return False
+
+def return_the_higest_candel(highs: np.ndarray, lows: np.ndarray, opens: np.ndarray, closes: np.ndarray, lenth: int):
+    max_index = highs[-lenth:].argmax()
+    return opens[max_index], highs[max_index], lows[max_index], closes[max_index]
+
+@jit(nopython=True)
+def last_lowest(lows: np.ndarray, lenth: int):
+    min_in_last_20 = np.min(lows[-lenth:])
+    return lows[-1] == min_in_last_20
+
+@jit(nopython=True)
+def last_highest(highs: np.ndarray, lenth: int):
+    min_in_last_20 = np.max(highs[-lenth:])
+    return highs[-1] == min_in_last_20
+
+@jit(nopython=True)
+def last_lowest_highest(highs, lows, lowest_highest_none, ln):
+    if lowest_highest_none == 'none':
+        return True
+    elif lowest_highest_none == 'lowest':
+        return last_lowest(lows, ln)
+    elif lowest_highest_none == 'highest':
+        return last_highest(highs, ln)

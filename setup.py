@@ -8,7 +8,7 @@ def setup():
     settings.init_stop_loss = 0.01
     settings.take_profit = 0.20
 
-    settings.main_variant = 2
+    settings.main_variant = 4
     settings.printer = False
     settings.drawing = False
     settings.send_pic = False
@@ -28,9 +28,9 @@ def setup():
     settings.taker_fee = 0.12
     settings.maker_fee = 0.12
 
-    settings.curren_uid = 'f2f8cbfe'
-    settings.hot_count_on_off = 0
-    settings.cold_count_on_off = 1
+    settings.curren_uid = '8a905127'
+    settings.hot_count_on_off = 1
+    settings.cold_count_on_off = 0
     settings.cold_count_iterations = 500
     settings.cold_count_print_all = 0
     settings.cold_count_print_res = {
@@ -50,8 +50,8 @@ def setup():
                                     'ham_15': 0,
                                     'mid_5': 0,
                                     'mid_15': 0,
-                                    'test_5': 0,
-                                    'test_10': 0,
+                                    'test_5': 1,
+                                    'test_10': 1,
                                 }
     sv.settings = settings
     return settings

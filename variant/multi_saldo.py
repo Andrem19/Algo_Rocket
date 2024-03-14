@@ -110,6 +110,7 @@ async def mp_saldo(coin_list, use_multiprocessing=True):
         for coin in coin_list:
             result = unpack_and_call((coin, profit_path))
             await process_result(result, coin, coin_list_len)
+            coin_list_len-=1
 
 
     all_positions = util.load_positions('_profits')

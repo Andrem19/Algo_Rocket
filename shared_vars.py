@@ -4,6 +4,7 @@ from models.signal import Signal
 from models.increaser import Increaser, GeneralIncreaser
 from models.settings import Settings
 from datetime import datetime, timedelta
+from models.reactor import Reactor
 
 days_gap = {}
 telegram_api = 'API_TOKEN_1'
@@ -16,6 +17,7 @@ time_finish = 0
 
 preload_sets = {}
 preload = False
+reactor: Reactor = None
 
 data: np.ndarray = None
 data_1: np.ndarray = None
@@ -160,3 +162,4 @@ token_model_down = {
         'none': 0
     },
 }
+saldo_sum = 0

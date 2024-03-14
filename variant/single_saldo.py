@@ -17,8 +17,7 @@ async def process_result(result, coin, coin_list_len):
     report = stat.proceed_positions(result)
     report['coin'] = coin
     report = util.insert(report, 'Num', coin_list_len, 0)
-    coin_list_len-=1
-    printer.print_colored_dict(report)
+    # printer.print_colored_dict(report)
     return report
 
 def do_job(coin: str, profit_path: str, lock):
@@ -55,6 +54,7 @@ def unpack_and_call(args):
     return do_job(*args, output_lock)
 
 async def mp_saldo(coin_list, use_multiprocessing=True):
+    sv.saldo_sum = 0
     zero_saldo_count = 0
     coin_list_len = len(coin_list)
     util.start_of_program_preparing()
@@ -68,6 +68,15 @@ async def mp_saldo(coin_list, use_multiprocessing=True):
         for coin in coin_list:
             result = unpack_and_call((coin, profit_path))
             report = await process_result(result, coin, coin_list_len)
+            sv.saldo_sum += report['saldo']
+            report['allSaldo'] = round(sv.saldo_sum, 2)
+            printer.print_colored_dict(report)
+            coin_list_len-=1
+            # print(f'saldo: {sv.saldo_sum}')
+            if coin_list_len>10:
+                if (coin_list_len<60 and sv.saldo_sum<=0) or (coin_list_len<66 and sv.saldo_sum==0) or sv.saldo_sum<-100:
+                    print('Next iteration =====>')
+                    return
 
 
     if os.path.exists(f'_profits/{sv.unique_ident}_profits.txt'):
@@ -81,10 +90,11 @@ async def mp_saldo(coin_list, use_multiprocessing=True):
                 full_report['saldo'] = 0
             full_report['med_dur'] = med_dur
             full_report['coin'] = 'All contracts'
-            print(full_report)
-            print(dropdowns)
-
-            points = util.get_points_value(len(filtred_positions))
-            path = viz.plot_time_series(filtred_positions, True, points, True, dropdowns, {})
-            await tel.send_inform_message(f'{full_report}', path, True)
+            if full_report['saldo']>0:
+                print(full_report)
+                print(dropdowns)
+                sv.reactor.print_pattern()
+                points = util.get_points_value(len(filtred_positions))
+                path = viz.plot_time_series(filtred_positions, True, points, True, dropdowns, full_report)
+                await tel.send_inform_message(f'{sv.reactor.pattern_info()}', path, True)
                 
