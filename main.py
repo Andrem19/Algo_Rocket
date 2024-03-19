@@ -23,7 +23,9 @@ import helpers.tel as tel
 
 sv.telegram_api = 'API_TOKEN_1'
 coin_list = coins.best_set # coins.new_collection + coins.coins_to_add#['LTCUSDT']# coins.all_coins
-
+# for co in coins.all_coins:
+#     if co not in hk.best_set_1:
+#         hk.best_set_1[co] = 1
 async def main(args):
     
     sv.time_start = datetime.now().timestamp()

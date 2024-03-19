@@ -63,13 +63,13 @@ async def count_run():
         await count()
         
         sv.days_gap = {}
-        drpdacc = stat.cross_the_border(sv.dropdowns_accumulate, 20)
+        drpdacc = stat.cross_the_border(sv.dropdowns_accumulate, 10)
         print(f'Left: {iter-i}')
         print(f'Stat dropdowns: {drpdacc}') 
         print(f'Med Saldo: {sum(sv.sum_saldo)/len(sv.sum_saldo)}')
         if sv.settings.cold_count_print_all or sv.settings.cold_count_print_res['final'] ==1:
             time.sleep(2)
-    drpdacc = stat.cross_the_border(sv.dropdowns_accumulate, 20)
+    drpdacc = stat.cross_the_border(sv.dropdowns_accumulate, 10)
     print(f'All dropdowns: {drpdacc}') 
     print(f'Median Saldo: {sum(sv.sum_saldo)/len(sv.sum_saldo)}')
     print(f'Max Saldo: {max(sv.sum_saldo)}')

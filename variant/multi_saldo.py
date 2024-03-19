@@ -32,6 +32,8 @@ async def process_result(result, coin, coin_list_len):
             with output_lock:
                 path = viz.plot_time_series(result, True, pt, True, drpd, {})
                 await tel.send_inform_message(f'{coin}', path, True)
+                pause = random.randint(5, 12)
+                time.sleep(pause)
 
 def do_job(coin: str, profit_path: str, lock):
     try:

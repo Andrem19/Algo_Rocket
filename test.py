@@ -1,10 +1,11 @@
-import math
+import helpers.tel as tel
+from decouple import config
+from telegram import Bot
+import asyncio
 
-def find_sqrt(target: int, number: int, prec: float):
-    res = number*prec
-    if res*res <= target:
-        return res
-    return find_sqrt(target, res, prec)
+api_token = config('API_TOKEN_1')
+chat_id = config("CHAT_ID")
 
-res = find_sqrt(1000, 1000, 0.98)
-print(res)
+bot = Bot(token=api_token)
+message = '<a href="https://www.coingecko.com/en/coins/ethereum">ETH</a>'
+asyncio.run(tel.send_inform_message(message, '', False))

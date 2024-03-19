@@ -167,3 +167,5 @@ saldo_sum = 0
 
 commander: Commander = None
 last_command = ''
+
+rsi_5_couner = 40

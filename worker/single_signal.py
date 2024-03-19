@@ -28,7 +28,7 @@ def get_signal(i, data):
         sv.signal.signal = sg
         sv.signal.data = sv.settings.time
         sv.settings.init_stop_loss = 0.006 #0.004
-        sv.settings.target_len = 3#3
+        sv.settings.target_len = 4#3
         sv.settings.amount = 20#20
         sv.signal.type_os_signal = 'test_5'
     else:

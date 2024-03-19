@@ -177,6 +177,7 @@ def proceed_positions(positions: list):
     }
 
 def filter_positions(deals):
+    # deals = rsi_5_filter(deals)
     # return recount_saldo(deals)
     # Сортируем сделки по времени открытия
     deals.sort(key=lambda d: d["open_time"])
@@ -189,11 +190,13 @@ def filter_positions(deals):
         'ham_1b': 1,#2->1!
         'rsi_1': 5,#5
         'down_1': 5,#5
+        'down_15': 5,
         'ham_5a': 5,#5->7
         'ham_5aa': 5,#5->1
         'ham_5b': 3,#2->3!
         'ham_5bb': 2,#2
         'rsi_5': 5,#5
+        'lst_5': 5,
         'coint_15': 5,#5
         'adx_5': 5,#3->5
         'adx_5a': 5,#3->5
@@ -209,11 +212,13 @@ def filter_positions(deals):
         'ham_1b': 1,
         'rsi_1': 1,
         'down_1': 1,
+        'down_15': 1,
         'ham_5a': 1,
         'ham_5aa': 1,
         'ham_5b': 1,
         'ham_5bb': 1,
         'rsi_5': 1,
+        'lst_5': 1,
         'coint_15': 1,
         'adx_5': 1,
         'adx_5a': 1,
@@ -235,6 +240,34 @@ def filter_positions(deals):
                     filtered_deals.append(deals[i])
     
     return recount_saldo(filtered_deals)
+
+from datetime import timedelta
+
+from datetime import timedelta
+
+def rsi_5_filter(deals):
+    # Сортируем сделки по времени открытия
+    deals.sort(key=lambda x: x['open_time'])
+    
+    filtered_deals = []
+    last_deal_time = None
+    current_deal_time = datetime.fromtimestamp(deals[0]['open_time']/1000)
+    for i in range(len(deals)):
+        # Проверяем условия
+        if deals[i]['type_of_signal'] in ['rsi_5', 'rsi_1']:
+            same_time_deals = [deal for deal in deals if deal['open_time'] == deals[i]['open_time']]
+            current_deal_time = datetime.fromtimestamp(deals[i]['open_time']/1000)
+            if last_deal_time is None or current_deal_time - last_deal_time <= timedelta(minutes=15) or len(same_time_deals) <4:
+                filtered_deals.append(deals[i])
+                last_deal_time = current_deal_time
+        else:
+            filtered_deals.append(deals[i])
+        
+            last_deal_time = current_deal_time
+    
+    return filtered_deals
+
+
 
 def calc_med_duration(positions):
     durations = []

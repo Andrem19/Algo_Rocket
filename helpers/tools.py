@@ -52,6 +52,11 @@ def trend(closes: np.ndarray, variant: str, step: int, minus_last: int):
         trend = all(np.diff(row_1) > 0) or all(np.diff(row_2) > 0) or all(np.diff(row_3) > 0)
     elif variant == 'down':
         trend = all(np.diff(row_1) < 0) or all(np.diff(row_2) < 0) or all(np.diff(row_3) < 0)
+    elif variant == 'none':
+        trend_1 = all(np.diff(row_1) > 0) or all(np.diff(row_2) > 0) or all(np.diff(row_3) > 0)
+        trend_2 = all(np.diff(row_1) < 0) or all(np.diff(row_2) < 0) or all(np.diff(row_3) < 0)
+        trend = not trend_1 and not trend_2
+    
     return trend
 
 def what_trend(closes: np.ndarray, step: int, minus_last: int):
