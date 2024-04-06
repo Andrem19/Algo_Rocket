@@ -2,6 +2,7 @@ import helpers.util as util
 import numpy as np
 import high_koff as hk
 import talib
+import coins_2
 import shared_vars as sv
 from models.increaser import Increaser
 from models.increaser import GeneralIncreaser
@@ -163,7 +164,7 @@ def position_entry_manager(increaser_gen: GeneralIncreaser, data: int, signal: i
 
 def check_high_candel(high: float, low: float, border, coin: str = 'XRPUSDT'):
     vol_can = util.calculate_percent_difference(high, low)
-    if abs(vol_can) > border*hk.best_set_1[coin]:
+    if abs(vol_can) > border*coins_2.best_set_dict[coin]:
         return True
     return False
 

@@ -18,10 +18,10 @@ def load_data_sets(timeframe: int):
         tm = '1h'
     else:
         tm = f'{timeframe}m'
+
     d = get_csv_data(f'_crypto_data/{sv.settings.coin}/{sv.settings.coin}_{tm}.csv')
 
     filtered_data = d[(d[:, 0] / 1000 >= sv.settings.start_date.timestamp()) & (d[:, 0] / 1000 <= sv.settings.finish_date.timestamp())]
-
     # filtered_data[np.argsort(filtered_data[:, 0])]
 
     # # Проверка на последовательность временных меток

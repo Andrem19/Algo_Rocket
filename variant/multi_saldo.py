@@ -32,7 +32,7 @@ async def process_result(result, coin, coin_list_len):
             with output_lock:
                 path = viz.plot_time_series(result, True, pt, True, drpd, {})
                 await tel.send_inform_message(f'{coin}', path, True)
-                pause = random.randint(5, 12)
+                pause = random.randint(10, 20)
                 time.sleep(pause)
 
 def do_job(coin: str, profit_path: str, lock):
@@ -45,24 +45,24 @@ def do_job(coin: str, profit_path: str, lock):
             return None
         
         #==============15m cointegration=================
-        sv.settings.coin = coin
-        data_1 = gd.load_data_sets(15)
-        sv.settings.coin = 'BTCUSDT'
-        data_2 = gd.load_data_sets(15)
-        min_time = max(np.min(data_1[:, 0]), np.min(data_2[:, 0]))
-        max_time = min(np.max(data_1[:, 0]), np.max(data_2[:, 0]))
-        data_1 = data_1[(data_1[:, 0] >= min_time) & (data_1[:, 0] <= max_time)]
-        data_2 = data_2[(data_2[:, 0] >= min_time) & (data_2[:, 0] <= max_time)]
-        sv.data_1 = data_1[np.argsort(data_1[:, 0])]
-        sv.data_2 = data_2[np.argsort(data_2[:, 0])]
-        sv.candel_dict_1 = util.create_candle_dict(sv.data_1)
-        sv.candel_dict_2 = util.create_candle_dict(sv.data_2)
+        # sv.settings.coin = coin
+        # data_1 = gd.load_data_sets(15)
+        # sv.settings.coin = 'BTCUSDT'
+        # data_2 = gd.load_data_sets(15)
+        # min_time = max(np.min(data_1[:, 0]), np.min(data_2[:, 0]))
+        # max_time = min(np.max(data_1[:, 0]), np.max(data_2[:, 0]))
+        # data_1 = data_1[(data_1[:, 0] >= min_time) & (data_1[:, 0] <= max_time)]
+        # data_2 = data_2[(data_2[:, 0] >= min_time) & (data_2[:, 0] <= max_time)]
+        # sv.data_1 = data_1[np.argsort(data_1[:, 0])]
+        # sv.data_2 = data_2[np.argsort(data_2[:, 0])]
+        # sv.candel_dict_1 = util.create_candle_dict(sv.data_1)
+        # sv.candel_dict_2 = util.create_candle_dict(sv.data_2)
         #=======================================================
         sv.settings.coin = coin
 
         data_gen_1m = gd.load_data_in_chunks(sv.settings, 100000, 1)
-        sv.data_5 = gd.load_data_sets(5)
-        sv.candel_dict_5 = util.create_candle_dict(sv.data_5)
+        # sv.data_5 = gd.load_data_sets(5)
+        # sv.candel_dict_5 = util.create_candle_dict(sv.data_5)
         #==============1h================================
         # sv.data_60 = gd.load_data_sets(60)
         # sv.candle_dict_60 = util.create_candle_dict(sv.data_60)
@@ -88,7 +88,6 @@ def do_job(coin: str, profit_path: str, lock):
                         viz.draw_candlesticks_positions(list_of_lists, profit_list, f'{sv.settings.coin}-{datetime.fromtimestamp(float(data[0][0])/1000)}-{datetime.fromtimestamp(float(data[-1][0])/1000)}')
             elif len(profit_list) == 0:
                 is_first_iter = True
-
         return position_collector
     except Exception as e:
         print(f'Error [do_job] {e}')
@@ -108,13 +107,14 @@ async def mp_saldo(coin_list, use_multiprocessing=True):
             for coin, result in zip(coin_list, executor.map(unpack_and_call, [(coin, profit_path) for coin in coin_list])):
                 await process_result(result, coin, coin_list_len)
                 coin_list_len-=1
+
     else:
         for coin in coin_list:
             result = unpack_and_call((coin, profit_path))
             await process_result(result, coin, coin_list_len)
             coin_list_len-=1
 
-
+    util.check_and_clean_data(f'_profits/{sv.unique_ident}_profits.txt')
     all_positions = util.load_positions('_profits')
     if len(all_positions)>0:
         filtred_positions = stat.filter_positions(all_positions)
@@ -132,8 +132,8 @@ async def mp_saldo(coin_list, use_multiprocessing=True):
         print(stat_dict)
         print('\033[0;31mDays gap:\033[0m')
         print(sv.days_gap)
-        print(type_collection)
-        print(sv.max_val)
+        # print(type_collection)
+        # print(sv.max_val)
         dict_splited = stat.sort_by_type(copy.deepcopy(filtred_positions))
         for key, pos in dict_splited.items():
             if sv.settings.cold_count_print_all or sv.settings.cold_count_print_res[key] ==1:

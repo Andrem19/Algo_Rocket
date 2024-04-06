@@ -14,7 +14,7 @@ def setup():
     settings.send_pic = False
     settings.pic_collections = False
     settings.iter_count = 1
-    settings.time = 5
+    settings.time = 60
     settings.coin = 'BTCUSDT'
     settings.amount = 20
     settings.chunk_len = 30
@@ -23,26 +23,32 @@ def setup():
     settings.counter = 0
 
     settings.start_date = datetime(2017, 1, 1)
-    settings.finish_date = datetime(2024, 4, 1)
+    settings.finish_date = datetime(2024, 5, 1)
 
-    settings.taker_fee = 0.12
-    settings.maker_fee = 0.12
+    settings.taker_fee = 0.2
+    settings.maker_fee = 0.2
 
-    settings.curren_uid = 'a406f43f'
-    settings.hot_count_on_off = 1
-    settings.cold_count_on_off = 0
-    settings.cold_count_iterations = 500
+    settings.curren_uid = '1f3671df'
+    settings.hot_count_on_off = 0
+    settings.cold_count_on_off = 1
+    settings.cold_count_iterations = 1
     settings.cold_count_print_all = 1
     settings.cold_count_print_res = {
                                     'final': 0,
+                                    'stub': 0,
                                     'ham_1a': 0,
+                                    'ham_1aX': 0,
                                     'ham_1b': 0,
                                     'rsi_1': 0,
+                                    'ham_2a': 0,
+                                    'ham_2b': 0,
                                     'down_1': 0,
                                     'down_15': 0,
                                     'ham_5a': 0,
+                                    'ham_5aX': 0,
                                     'ham_5aa': 0,
                                     'ham_5b': 0,
+                                    'ham_5bX': 0,
                                     'ham_5bb': 0,
                                     'lst_5': 0,
                                     'rsi_5': 0,
@@ -50,7 +56,7 @@ def setup():
                                     'adx_5': 0,
                                     'adx_5aa': 0,
                                     'ham_15': 0,
-                                    'mid_5': 0,
+                                    'mid_1': 0,
                                     'mid_15': 0,
                                     'test_5': 0,
                                     'test_10': 0,

@@ -14,9 +14,10 @@ import time
 import copy
 
 async def count():
-    all_positions = util.load_positions('_profits')
-    random.shuffle(all_positions)
-    filtred_positions = stat.filter_positions(all_positions)
+    # all_positions = util.load_positions('_profits')
+    random.shuffle(sv.all_positions)
+    filtred_positions = stat.filter_positions(sv.all_positions)
+    # print(f'lenth filtred position: {len(filtred_positions)}')
     dropdowns, type_collection = stat.dangerous_moments(filtred_positions)
     med_dur = stat.calc_med_duration(filtred_positions)
     stat_dict = stat.get_type_statistic(filtred_positions)
@@ -59,6 +60,7 @@ async def count_run():
     sv.time_start = datetime.now().timestamp()
     send_inform_message = 0
     iter = sv.settings.cold_count_iterations
+    sv.all_positions = util.load_positions('_profits')
     for i in range(iter):
         await count()
         
@@ -77,11 +79,14 @@ async def count_run():
     print(f'Median percent: {sum(sv.percent_accumulate)/len(sv.percent_accumulate)}')
     print(f'Median max bord: {sum(sv.max_border_accum)/len(sv.max_border_accum)}')
     print(f'Median min bord: {sum(sv.min_border_accum)/len(sv.min_border_accum)}')
+
+    sv.settings.cold_count_print_all=1
+    await count()
+
     sv.time_finish = datetime.now().timestamp()
     seconds = sv.time_finish-sv.time_start
     tm = str(timedelta(seconds=seconds))
     print(f'Exec speed: {tm}')
-
 
 
 # asyncio.run(count_run())

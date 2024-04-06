@@ -1,11 +1,13 @@
 import colorama
 from colorama import Fore, Style
+from datetime import datetime
 
 def print_position(position: dict): 
 
     type_close = position['type_close']
     profit = position['profit']
-
+    position['open_time'] = datetime.fromtimestamp(position['open_time']/1000)
+    position['close_time'] = datetime.fromtimestamp(position['close_time']/1000)
     if type_close == 'antitarget' and profit > 0:
         color = Fore.GREEN
     elif type_close == 'antitarget' and profit < 0:

@@ -6,6 +6,7 @@ from models.settings import Settings
 from datetime import datetime, timedelta
 from models.reactor import Reactor
 from commander.com import Commander
+from models.cur_pos import Position
 
 days_gap = {}
 telegram_api = 'API_TOKEN_1'
@@ -19,6 +20,8 @@ time_finish = 0
 preload_sets = {}
 preload = False
 reactor: Reactor = None
+position: Position = None
+all_positions = None
 
 data: np.ndarray = None
 data_1: np.ndarray = None
@@ -45,7 +48,12 @@ candel_dict_2 = {}
 
 max_val = {
         'ham_1a': 0,
+        'ham_1b': 0,
         'ham_5a': 0,
+        'ham_1aX': 0,
+        'ham_5aX': 0,
+        'ham_5b': 0,
+        'ham_5bX': 0,
         'ham_15': 0,
         'down_1': 0,
         'rsi_1': 0,
@@ -169,3 +177,12 @@ commander: Commander = None
 last_command = ''
 
 rsi_5_couner = 40
+is_success = False
+
+ham_1b_stls = []
+
+ham_1b_triger = 0
+price_close = 0
+frozen = 0
+delay = 0
+volume = 0

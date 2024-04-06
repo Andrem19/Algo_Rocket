@@ -92,8 +92,8 @@ async def mp_saldo(coin_list, use_multiprocessing=True):
             full_report['coin'] = 'All contracts'
             print(full_report)
             print(dropdowns)
-            sv.reactor.print_pattern()
+            # sv.reactor.print_pattern()
             points = util.get_points_value(len(filtred_positions))
             path = viz.plot_time_series(filtred_positions, True, points, True, dropdowns, full_report)
-            await tel.send_inform_message(f'{sv.reactor.pattern_info()}', path, True)
+            await tel.send_inform_message(f'{full_report}', path, True)
                 

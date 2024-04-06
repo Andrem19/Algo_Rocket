@@ -1,4 +1,5 @@
 import shared_vars as sv
+import copy
 from datetime import datetime
 
 def get_type_statistic(positions: list) -> dict:
@@ -180,42 +181,55 @@ def filter_positions(deals):
     # deals = rsi_5_filter(deals)
     # return recount_saldo(deals)
     # Сортируем сделки по времени открытия
-    deals.sort(key=lambda d: d["open_time"])
+    # deals.sort(key=lambda d: d["open_time"])
+    # deals.sort(key=lambda d: (d["open_time"], -d["volume"]))
+    deals.sort(key=lambda d: (d["open_time"], d["type_of_signal"] == 'ham_1b', -d["volume"]))
 
     # Создаем новый список для хранения отфильтрованных сделок
     filtered_deals = []
 
     filter_val = {
-        'ham_1a': 6,#5->7
+        'stub': 1,
+        'ham_1a': 5,#5->7
+        'ham_2a': 3,
+        'ham_2b':1,
+        'ham_1aX': 5,#5->7
         'ham_1b': 1,#2->1!
         'rsi_1': 5,#5
         'down_1': 5,#5
         'down_15': 5,
-        'ham_5a': 5,#5->7
+        'ham_5a': 3,#5->7
+        'ham_5aX': 3,#5->7
         'ham_5aa': 5,#5->1
-        'ham_5b': 3,#2->3!
+        'ham_5b': 2,#2->3!
+        'ham_5bX': 3,#2->3!
         'ham_5bb': 2,#2
         'rsi_5': 5,#5
-        'lst_5': 5,
+        'lst_5': 1,
         'coint_15': 5,#5
         'adx_5': 5,#3->5
         'adx_5a': 5,#3->5
         'adx_5aa': 5,#3->5
         'ham_15': 1,#3->1
-        'mid_5': 5,#5
+        'mid_1': 5,#5
         'mid_15': 5,#5
         'test_5': 5,
         'test_10': 5,
     }
     on_off = {
+        'stub': 1,
         'ham_1a': 1,
+        'ham_2a': 1,
+        'ham_2b': 1,
+        'ham_1aX': 1,
         'ham_1b': 1,
         'rsi_1': 1,
         'down_1': 1,
         'down_15': 1,
         'ham_5a': 1,
-        'ham_5aa': 1,
+        'ham_5aX': 1,
         'ham_5b': 1,
+        'ham_5bX': 1,
         'ham_5bb': 1,
         'rsi_5': 1,
         'lst_5': 1,
@@ -224,7 +238,7 @@ def filter_positions(deals):
         'adx_5a': 1,
         'adx_5aa': 1,
         'ham_15': 1,
-        'mid_5': 1,
+        'mid_1': 1,
         'mid_15': 1,
         'test_5': 1,
         'test_10': 1,
@@ -235,11 +249,25 @@ def filter_positions(deals):
 
         if on_off[deals[i]["type_of_signal"]] == 1:
             if all(d['coin'] != deals[i]["coin"] for d in active):
-                if len(active) < filter_val[deals[i]["type_of_signal"]]:
-                    set_koof(deals[i], len(active))
-                    filtered_deals.append(deals[i])
-    
-    return recount_saldo(filtered_deals)
+                # types = [t['type_of_signal'] for t in active if 'type_of_signal' in t]
+                ham_5a = sum(1 for d in active if d.get('type_of_signal') == 'ham_5a')
+                ham_5b = sum(1 for d in active if d.get('type_of_signal') == 'ham_5b')
+                ham_1a = sum(1 for d in active if d.get('type_of_signal') == 'ham_1a')
+                # ham_2a = sum(1 for d in active if d.get('type_of_signal') == 'ham_2a')
+                # ham_1b = sum(1 for d in active if d.get('type_of_signal') == 'ham_1b')
+                limit = filter_val[deals[i]["type_of_signal"]]
+                if (deals[i]["type_of_signal"] == 'ham_2b' and len(active)<limit)\
+                    or (deals[i]["type_of_signal"] == 'ham_1b' and len(active)<limit)\
+                    or (deals[i]["type_of_signal"] == 'ham_1a' and ham_1a<limit)\
+                    or (deals[i]["type_of_signal"] == 'ham_5a' and ham_5a<limit)\
+                    or (deals[i]["type_of_signal"] == 'ham_5b' and ham_5b<limit)\
+                    or (deals[i]["type_of_signal"] == 'ham_2a' and len(active)<limit)\
+                    or (deals[i]["type_of_signal"] == 'stub' and len(active)<limit):
+
+                    pos = set_koof(copy.copy(deals[i]), len(active))
+                    filtered_deals.append(pos)
+    filtered_list = list(filter(lambda d: d['type_of_signal'] != 'stub', filtered_deals))
+    return recount_saldo(filtered_list)
 
 from datetime import timedelta
 
@@ -294,10 +322,13 @@ def recount_saldo(filtered_deals):
     return filtered_deals
 
 def set_koof(position, lenth_active):
-    if position["type_of_signal"] in ['ham_1a', 'ham_5a']:
+    if position["type_of_signal"] in ['ham_1a', 'ham_5b']:
         position["profit"]*=2
+    # elif position["type_of_signal"] in ['ham_5b', 'ham_1b']:
+    #     position["profit"]*=0.5
     else:
         position["profit"]*=1
+    return position
 
 def collect_all_types(positions, start, finish, dict_collection):
     types_dict = {}

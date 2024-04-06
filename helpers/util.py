@@ -13,8 +13,8 @@ def save_list(my_list, path):
     try:
         with open(path, 'a') as file:
             for item in my_list:
-                if all(key in item for key in ['open_time', 'close_time', 'signal', 'profit', 'coin', 'saldo', 'data_s', 'type_of_signal']):
-                    file.write(f"{item['open_time']},{item['close_time']},{item['signal']},{item['profit']},{item['coin']},{item['saldo']},{item['data_s']},{item['type_of_signal']},{item['type_close']}" + "\n")
+                if all(key in item for key in ['open_time', 'close_time', 'signal', 'profit', 'coin', 'saldo', 'data_s', 'type_of_signal', 'volume']):
+                    file.write(f"{item['open_time']},{item['close_time']},{item['signal']},{item['profit']},{item['coin']},{item['saldo']},{item['data_s']},{item['type_of_signal']},{item['type_close']},{item['volume']}" + "\n")
                 else:
                     print(f'Some keys are missing {item}')
     except Exception as e:
@@ -43,6 +43,7 @@ def load_positions(folder_path: str):
                     data_s = int(parts[6])
                     type_of_signal = str(parts[7])
                     type_close = str(parts[8])
+                    volume = float(parts[9])
 
                     position = {
                         'open_time': timestamp_open,
@@ -53,7 +54,8 @@ def load_positions(folder_path: str):
                         'saldo': saldo,
                         'data_s': data_s,
                         'type_of_signal': type_of_signal,
-                        'type_close': type_close
+                        'type_close': type_close,
+                        'volume': volume,
                     }
                     data.append(position)
             except Exception as e:
@@ -208,6 +210,24 @@ def update_dict(existing_dict, new_values):
         else:
             existing_dict[key] = value
     return existing_dict
+
+import csv
+import os
+
+def check_and_clean_data(file_path):
+    with open(file_path, 'r') as f:
+        reader = csv.reader(f)
+        data = list(reader)
+
+    cleaned_data = [row for row in data if all(cell != '' for cell in row)]
+
+    if len(cleaned_data) != len(data):
+        with open(file_path, 'w', newline='') as f:
+            writer = csv.writer(f)
+            writer.writerows(cleaned_data)
+        print("File was changed")
+    else:
+        print("File didnt change")
 
 
             

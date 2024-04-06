@@ -1,10 +1,12 @@
 import shared_vars as sv
 import coins as coins
+import coins_2
 from datetime import datetime
 import setup as setup
 import helpers.util as util
 import variant.pattern_sarcher as ps
 from itertools import product
+import variant.rsi_variant as rsi_var
 import random
 import variant.single_saldo as ss
 import variant.multi_saldo as ms
@@ -13,6 +15,7 @@ import helpers.tools as tools
 from models.reactor import Reactor, MethodFunc
 from models.settings import Settings
 import cold_count as cc
+import variant.long_st as lst
 import asyncio
 import high_koff as hk
 import io
@@ -22,10 +25,8 @@ import uuid
 import helpers.tel as tel
 
 sv.telegram_api = 'API_TOKEN_1'
-coin_list = coins.best_set # coins.new_collection + coins.coins_to_add#['LTCUSDT']# coins.all_coins
-# for co in coins.all_coins:
-#     if co not in hk.best_set_1:
-#         hk.best_set_1[co] = 1
+coin_list = coins_2.best_set
+
 async def main(args):
     
     sv.time_start = datetime.now().timestamp()
@@ -36,7 +37,7 @@ async def main(args):
         await ss.mp_saldo(coin_list, True)
     elif sv.settings.main_variant == 2:
         if sv.settings.hot_count_on_off==1:
-            await ms.mp_saldo(coin_list)
+            await ms.mp_saldo(coin_list, True)
         if sv.settings.cold_count_on_off==1:
             if sv.settings.hot_count_on_off==0:
                 sv.unique_ident = sv.settings.curren_uid
@@ -94,7 +95,13 @@ async def main(args):
                     await tel.send_inform_message(f'{min_rsi_1}-{min_rsi_2}-{signal} is alive', '', False)
             except Exception as e:
                 print(e)
-
+    elif sv.settings.main_variant == 5:
+        try:
+            await lst.lg_saldo(['BTCUSDT'])
+        except Exception as e:
+            print(e)
+    elif sv.settings.main_variant == 6:
+        rsi_var.iterator_worker(50000)
     
     sv.time_finish = datetime.now().timestamp()
     seconds = sv.time_finish-sv.time_start

@@ -4,6 +4,7 @@ import helpers.profit as prof
 import helpers.print_info as printer
 import numpy as np
 import traceback
+import copy
 
 def position_proccess(profit_list: list, dt: np.ndarray, is_first_iter: bool):
     try:
@@ -66,7 +67,7 @@ def position_proccess(profit_list: list, dt: np.ndarray, is_first_iter: bool):
             close = data[-1][1]
             index = len(data)-1
 
-        dt = {
+        data_dict = {
             'open_time': float(data[0][0]),
             'profit_list': profit_list,
             'type_close': type_close,
@@ -74,14 +75,14 @@ def position_proccess(profit_list: list, dt: np.ndarray, is_first_iter: bool):
             'cand_close': data[index],
             'price_close': close
         }
-        position = prof.process_profit(dt, is_first_iter)
+        position = prof.process_profit(data_dict, is_first_iter)
         
         if sv.settings.printer and sv.settings.counter%sv.settings.iter_count==0:
-            printer.print_position(position)
-            if sv.settings.drawing:
+            printer.print_position(copy.deepcopy(position))
+            if sv.settings.drawing and (position['type_of_signal'] == 'ham_1a' or position['type_of_signal'] == 'ham_5a' or position['type_of_signal'] == 'ham_5b'):
                 sett = f'tp: {sv.settings.take_profit} sl: {sv.settings.init_stop_loss}'
                 title = f'up {index} - {sett}' if sv.signal.signal == 1 else f'down {index} - {sett}'
-                viz.draw_candlesticks(data[ind-sv.settings.chunk_len:ind+index+1], title, sv.settings.chunk_len)
+                viz.draw_candlesticks(dt[ind-sv.settings.chunk_len:ind+index+1], title, sv.settings.chunk_len)
         index = index-1 if type_close == 'timefinish' else index
 
         return index+1
