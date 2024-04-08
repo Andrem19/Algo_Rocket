@@ -183,36 +183,22 @@ def filter_positions(deals):
     # Сортируем сделки по времени открытия
     # deals.sort(key=lambda d: d["open_time"])
     # deals.sort(key=lambda d: (d["open_time"], -d["volume"]))
-    deals.sort(key=lambda d: (d["open_time"], d["type_of_signal"] == 'ham_1b', -d["volume"]))
+    deals.sort(key=lambda d: (d["open_time"], 'ham_1b' in d["type_of_signal"], -d["volume"]))
 
     # Создаем новый список для хранения отфильтрованных сделок
     filtered_deals = []
 
     filter_val = {
         'stub': 1,
-        'ham_1a': 5,#5->7
-        'ham_2a': 3,
+        'ham_1b': 1,
+        'ham_1a': 5,
+        'ham_2a': 1,
         'ham_2b':1,
-        'ham_1aX': 5,#5->7
-        'ham_1b': 1,#2->1!
-        'rsi_1': 5,#5
-        'down_1': 5,#5
-        'down_15': 5,
-        'ham_5a': 3,#5->7
-        'ham_5aX': 3,#5->7
-        'ham_5aa': 5,#5->1
-        'ham_5b': 2,#2->3!
-        'ham_5bX': 3,#2->3!
-        'ham_5bb': 2,#2
-        'rsi_5': 5,#5
-        'lst_5': 1,
-        'coint_15': 5,#5
-        'adx_5': 5,#3->5
-        'adx_5a': 5,#3->5
-        'adx_5aa': 5,#3->5
-        'ham_15': 1,#3->1
-        'mid_1': 5,#5
-        'mid_15': 5,#5
+        'ham_1bx': 1,
+        'ham_1by': 1,
+        'ham_1bz': 1,
+        'ham_5a': 3,
+        'ham_5b': 2,
         'test_5': 5,
         'test_10': 5,
     }
@@ -221,25 +207,12 @@ def filter_positions(deals):
         'ham_1a': 1,
         'ham_2a': 1,
         'ham_2b': 1,
-        'ham_1aX': 1,
+        'ham_1bx': 1,
+        'ham_1by': 1,
+        'ham_1bz': 1,
         'ham_1b': 1,
-        'rsi_1': 1,
-        'down_1': 1,
-        'down_15': 1,
         'ham_5a': 1,
-        'ham_5aX': 1,
         'ham_5b': 1,
-        'ham_5bX': 1,
-        'ham_5bb': 1,
-        'rsi_5': 1,
-        'lst_5': 1,
-        'coint_15': 1,
-        'adx_5': 1,
-        'adx_5a': 1,
-        'adx_5aa': 1,
-        'ham_15': 1,
-        'mid_1': 1,
-        'mid_15': 1,
         'test_5': 1,
         'test_10': 1,
     }
@@ -253,20 +226,21 @@ def filter_positions(deals):
                 ham_5a = sum(1 for d in active if d.get('type_of_signal') == 'ham_5a')
                 ham_5b = sum(1 for d in active if d.get('type_of_signal') == 'ham_5b')
                 ham_1a = sum(1 for d in active if d.get('type_of_signal') == 'ham_1a')
-                # ham_2a = sum(1 for d in active if d.get('type_of_signal') == 'ham_2a')
+                ham_2a = sum(1 for d in active if d.get('type_of_signal') == 'ham_2a')
                 # ham_1b = sum(1 for d in active if d.get('type_of_signal') == 'ham_1b')
+
                 limit = filter_val[deals[i]["type_of_signal"]]
-                if (deals[i]["type_of_signal"] == 'ham_2b' and len(active)<limit)\
-                    or (deals[i]["type_of_signal"] == 'ham_1b' and len(active)<limit)\
+                if ('ham_1b' in deals[i]["type_of_signal"] and len(active)<limit)\
                     or (deals[i]["type_of_signal"] == 'ham_1a' and ham_1a<limit)\
                     or (deals[i]["type_of_signal"] == 'ham_5a' and ham_5a<limit)\
                     or (deals[i]["type_of_signal"] == 'ham_5b' and ham_5b<limit)\
-                    or (deals[i]["type_of_signal"] == 'ham_2a' and len(active)<limit)\
+                    or (deals[i]["type_of_signal"] == 'ham_2a' and ham_2a<limit and len(active) > 1)\
                     or (deals[i]["type_of_signal"] == 'stub' and len(active)<limit):
 
-                    pos = set_koof(copy.copy(deals[i]), len(active))
+                    pos = set_koof(copy.copy(deals[i]), len(active), ham_1a, ham_5b)
                     filtered_deals.append(pos)
     filtered_list = list(filter(lambda d: d['type_of_signal'] != 'stub', filtered_deals))
+
     return recount_saldo(filtered_list)
 
 from datetime import timedelta
@@ -321,11 +295,13 @@ def recount_saldo(filtered_deals):
 
     return filtered_deals
 
-def set_koof(position, lenth_active):
-    if position["type_of_signal"] in ['ham_1a', 'ham_5b']:
+def set_koof(position, lenth_active, ham_1a, ham_5b):
+    if position["type_of_signal"] in ['ham_2a', 'ham_5b']:
         position["profit"]*=2
-    # elif position["type_of_signal"] in ['ham_5b', 'ham_1b']:
-    #     position["profit"]*=0.5
+    elif position["type_of_signal"] in ['ham_1a'] and lenth_active>0:
+        position["profit"]*=2
+    elif 'ham_1b' in position["type_of_signal"]:
+        position["profit"]*=0.5
     else:
         position["profit"]*=1
     return position
@@ -361,8 +337,7 @@ def dangerous_moments(positions: list) -> dict:
         elif pos['saldo'] < lowest_moment:
             lowest_moment = pos['saldo']
             finish = i
-    counter_300 = 0
-    counter_200 = 0
+
     counter_150 = 0
     counter_100 = 0
     counter_90 = 0
@@ -374,16 +349,14 @@ def dangerous_moments(positions: list) -> dict:
     counter_30 = 0
     counter_20 = 0
     counter_10 = 0
-    counter_5 = 0
+    counter_8 = 0
+    counter_6 = 0
+    counter_4 = 0
     counter_2 = 0
     
     for drdw in drowdowns:
         percentage = (drdw / amount)*100
-        if percentage > 300:
-            counter_300 +=1
-        elif percentage > 200:
-            counter_200 += 1
-        elif percentage > 150:
+        if percentage > 150:
             counter_150 += 1
         elif percentage > 100:
             counter_100 +=1
@@ -405,14 +378,16 @@ def dangerous_moments(positions: list) -> dict:
             counter_20 += 1
         elif percentage > 10:
             counter_10 += 1
-        elif percentage > 5:
-            counter_5 += 1
+        elif percentage > 8:
+            counter_8 += 1
+        elif percentage > 6:
+            counter_6 += 1
+        elif percentage > 4:
+            counter_4 += 1
         elif percentage > 2:
             counter_2 += 1
         
     down_result = {
-    'counter_300': counter_300,
-    'counter_200': counter_200,
     'counter_150': counter_150,
     'counter_100': counter_100,
     'counter_90': counter_90,
@@ -424,7 +399,9 @@ def dangerous_moments(positions: list) -> dict:
     'counter_30': counter_30,
     'counter_20': counter_20,
     'counter_10': counter_10,
-    'counter_5': counter_5,
+    'counter_8': counter_8,
+    'counter_6': counter_6,
+    'counter_4': counter_4,
     'counter_2': counter_2
     }
     return down_result, dict_collection

@@ -28,10 +28,10 @@ def setup():
     settings.taker_fee = 0.2
     settings.maker_fee = 0.2
 
-    settings.curren_uid = '1f3671df'
-    settings.hot_count_on_off = 0
-    settings.cold_count_on_off = 1
-    settings.cold_count_iterations = 1
+    settings.curren_uid = '4a7240f0'
+    settings.hot_count_on_off = 1
+    settings.cold_count_on_off = 0
+    settings.cold_count_iterations = 100
     settings.cold_count_print_all = 1
     settings.cold_count_print_res = {
                                     'final': 0,
@@ -40,6 +40,9 @@ def setup():
                                     'ham_1aX': 0,
                                     'ham_1b': 0,
                                     'rsi_1': 0,
+                                    'ham_1bx': 0,
+                                    'ham_1by': 0,
+                                    'ham_1bz': 0,
                                     'ham_2a': 0,
                                     'ham_2b': 0,
                                     'down_1': 0,

@@ -7,11 +7,13 @@ import coins_2
 import pandas as pd
 
 # Читаем только первые 1000 строк
-df = pd.read_csv('rsi_data.csv', nrows=1000)
+# df = pd.read_csv('rsi_data.csv', nrows=1000)
 
 # Печатаем DataFrame
-print(df)
+# print(df)
 
+if 'ham_1b' in 'ham_1by':
+    print(True)
 
 # seen = set()
 # duplicates = set()
