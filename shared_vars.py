@@ -186,3 +186,5 @@ price_close = 0
 frozen = 0
 delay = 0
 volume = 0
+
+ham_1b_triger = 0

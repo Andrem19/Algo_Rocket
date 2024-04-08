@@ -20,6 +20,8 @@ def get_signal(i_1, data_1, settings: Settings):
         return
     if sv.delay > 0:
         sv.delay-=1
+    if sv.ham_1b_triger > 0:
+        sv.ham_1b_triger-=1
 
     op5, hi5, lo5, cl5 = None, None, None, None 
     sv.signal.signal = 3

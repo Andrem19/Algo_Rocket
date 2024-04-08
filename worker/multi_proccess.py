@@ -79,7 +79,7 @@ def position_proccess(profit_list: list, dt: np.ndarray, is_first_iter: bool):
         
         if sv.settings.printer and sv.settings.counter%sv.settings.iter_count==0:
             printer.print_position(copy.deepcopy(position))
-            if sv.settings.drawing and (position['type_of_signal'] == 'ham_1a' or position['type_of_signal'] == 'ham_5a' or position['type_of_signal'] == 'ham_5b'):
+            if sv.settings.drawing:
                 sett = f'tp: {sv.settings.take_profit} sl: {sv.settings.init_stop_loss}'
                 title = f'up {index} - {sett}' if sv.signal.signal == 1 else f'down {index} - {sett}'
                 viz.draw_candlesticks(dt[ind-sv.settings.chunk_len:ind+index+1], title, sv.settings.chunk_len)
